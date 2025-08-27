@@ -1,5 +1,5 @@
 # Sleepy_Android_Js
-使用 [Autox.js](https://web.archive.org/web/20241224233444/https://github.com/kkevsekk1/AutoX) 编写的安卓自动更新状态脚本
+使用 **Autox.js** 编写的安卓自动更新状态脚本
 
 ### 软件下载
 
