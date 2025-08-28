@@ -8,7 +8,8 @@ const API_URL = "server"; // 你的完整 API 地址，以 `/device/set` 结尾
 const SECRET = "secret"; // 你的 secret
 const ID = "deviceid"; // 你的设备 id, 唯一
 const SHOW_NAME = "devicename"; // 你的设备名称, 将显示在网页上
-const CHECK_INTERVAL = "3000"; // 检查间隔 (毫秒, 1000ms=1s)
+const CHECK_INTERVAL = "1000"; // 检查间隔 (毫秒, 1000ms=1s)
+const APP_BLACKLIST = ["微信输入法"]
 // config end
 
 auto.waitFor(); // 等待无障碍
@@ -46,6 +47,9 @@ function check_status() {
     // log(`[check] app_name: '${app_name}'`);
     var battery = device.getBattery(); // 电池百分比
     // log(`[check] battery: ${battery}%`);
+
+    if (!app_name || APP_BLACKLIST.includes(app_name)) return "";
+    
     // 判断设备充电状态
     if (device.isCharging()) {
         var retname = `电量 [${battery}% +] ${app_name}`;
