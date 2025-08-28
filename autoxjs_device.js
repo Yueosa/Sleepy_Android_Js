@@ -32,6 +32,8 @@ function error(msg) {
 
 var last_status = "";
 
+var last_valid_app = ""; // 保存上一次合法的应用状态
+
 function check_status() {
     /*
     检查状态并返回 app_name (如未在使用则返回空)
@@ -39,8 +41,10 @@ function check_status() {
     */
     // log(`[check] screen status: ${device.isScreenOn()}`);
     if (!device.isScreenOn()) {
+        // 屏幕关闭时直接返回未使用
         return "";
     }
+
     var app_package = currentPackage(); // 应用包名
     // log(`[check] app_package: '${app_package}'`);
     var app_name = app.getAppName(app_package); // 应用名称
@@ -48,17 +52,22 @@ function check_status() {
     var battery = device.getBattery(); // 电池百分比
     // log(`[check] battery: ${battery}%`);
 
-    if (!app_name || APP_BLACKLIST.includes(app_name)) return "";
-    
+    // 当前应用在黑名单中，则返回上一次合法状态
+    if (app_name && APP_BLACKLIST.includes(app_name)) {
+        return last_valid_app;
+    }
+
     // 判断设备充电状态
-    if (device.isCharging()) {
-        var retname = `电量 [${battery}% +] ${app_name}`;
-    } else {
-        var retname = `电量 [${battery}%] ${app_name}`;
+    var retname = "";
+    if (app_name) {
+        if (device.isCharging()) {
+            retname = `电量 [${battery}% +] ${app_name}`;
+        } else {
+            retname = `电量 [${battery}%] ${app_name}`;
+        }
+        last_valid_app = retname; // 更新上一次合法状态
     }
-    if (!app_name) {
-        retname = "";
-    }
+
     return retname;
 }
 
